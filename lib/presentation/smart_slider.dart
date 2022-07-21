@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:smart_carousel_slider/application/services/utils.dart';
 
 class HomeWidget extends StatefulWidget {
   final List<Widget> items;
@@ -18,14 +19,6 @@ class _HomeWidgetState extends State<HomeWidget> {
   int currentIndex = 0;
   Timer? sliderTimer;
 
-  Timer getTimer({int duration = 3}) {
-    return Timer.periodic(Duration(seconds: duration), (timer) {
-      _pageController.animateToPage(pageNumber,
-          duration: const Duration(seconds: 1), curve: Curves.easeInOutCirc);
-      pageNumber++;
-    });
-  }
-
   final List<String> items = ['1', '2', '3', '4', '5', '6'];
   @override
   void initState() {
@@ -33,7 +26,8 @@ class _HomeWidgetState extends State<HomeWidget> {
       initialPage: 0,
       viewportFraction: 0.85,
     );
-    sliderTimer = getTimer();
+    sliderTimer =
+        getTimer(pageNumber: pageNumber, pageController: _pageController);
     super.initState();
   }
 
@@ -72,9 +66,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                           sliderTimer?.cancel();
                           sliderTimer = null;
                         },
-                        onPanCancel: () {
-                          sliderTimer = getTimer();
-                        },
+                        onPanCancel: () => sliderTimer = getTimer(
+                            pageNumber: pageNumber,
+                            pageController: _pageController),
                         child: Container(
                           margin: const EdgeInsets.all(24.0),
                           height: 180,
